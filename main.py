@@ -40,6 +40,7 @@ alphabet = {
 }
 
 def awaitHotkeys():
+     print(f"Утилита работает. Используйте: {serializer.hotkeys} для исправления. Не забудьте выделить текст!")
      def on_hotkey():
           time.sleep(0.5)
           pyautogui.hotkey("ctrl", "c")
@@ -85,5 +86,8 @@ def fixText(text: str):
      pyperclip.copy("\0")
 
 if __name__ == "__main__":
-     serializer.readJSON()
-     awaitHotkeys()
+     try:
+          serializer.readJSON()
+          awaitHotkeys()
+     except Exception as e:
+          print(f"Ошибка при запуске: {e}")
