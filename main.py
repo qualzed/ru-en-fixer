@@ -34,10 +34,12 @@ alphabet = {
      ("n", "т"),
      ("m", "ь"),
      (",", "б"),
-     (".", "ю"),
+     # ("/", "ю"), 
      ("/", "."),
      ("`", "ё"),
      ("?", ","),
+     ("{", "Х"),
+     ("}", "Ъ"),
 
      # Symbols only
      ("@", "\""),
@@ -48,14 +50,19 @@ alphabet = {
 }
 
 def awaitHotkeys():
-     print(f"Утилита работает. Используйте: {serializer.hotkeys} для исправления. Не забудьте выделить текст!")
-     def on_hotkey():
-          time.sleep(0.5)
-          pyautogui.hotkey("ctrl", "c")
-          fixText(text=pyperclip.paste())
+     try:
+          print(f"[+] Утилита работает. Используйте: {serializer.hotkeys} для исправления.\nИзменить сочетание клавиш - ALT+Q\nВы можете свернуть окно, либо переместить на другой экран.\nНе забудьте выделить текст!")
+          
+          def on_hotkey():
+               time.sleep(0.5)
+               pyautogui.hotkey("ctrl", "c")
+               fixText(text=pyperclip.paste())
 
-     keyboard.add_hotkey(serializer.hotkeys, on_hotkey)
-     keyboard.wait()
+          keyboard.add_hotkey(serializer.hotkeys, on_hotkey)
+          keyboard.wait()
+     except KeyboardInterrupt:
+          print(f"[/] Вы нажали CTRL+C. Закрываю...")
+          exit(0)
 
 def detectDominantLanguage(text: str) -> str:
      count: list = [0, 0] # english and russian
@@ -89,6 +96,7 @@ def fixText(text: str):
                     text = text.replace(russian, english)
                elif russian.upper() in text:
                     text = text.replace(russian.upper(), english.upper())
+
      pyperclip.copy(text=text)
      pyautogui.hotkey("ctrl", "v")
      pyperclip.copy("\0")
@@ -98,4 +106,5 @@ if __name__ == "__main__":
           serializer.readJSON()
           awaitHotkeys()
      except Exception as e:
-          print(f"Ошибка при запуске: {e}")
+          print(f"[-] Ошибка при запуске: {e}")
+          input()
